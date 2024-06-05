@@ -5,8 +5,10 @@ import { cn } from "@/lib/utils";
 import { Rnd } from "react-rnd";
 import HandleComponent from "@/components/HandleComponent";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RadioGroup } from "@headlessui/react";
+import { Radio, RadioGroup } from "@headlessui/react";
 import { useState } from "react";
+import { COLORS } from "@/validator/option-validator";
+import { Label } from "@/components/ui/label";
 
 interface DesignConfiguratorProps {
 	configId: string
@@ -15,7 +17,7 @@ interface DesignConfiguratorProps {
 }
 
 const DesignConfigurator = ({ configId, imgUrl, imgDimensions }: DesignConfiguratorProps) => {
-	const [options, setOptions] = useState({color: 'black'})
+	const [ options, setOptions ] = useState<{ color: (typeof COLORS)[number] }>({ color: COLORS[0] })
 	return (
 		<div className='relative mt-20 grid grid-cols-3 mb-20 pb-20'>
 			<div
@@ -55,12 +57,28 @@ const DesignConfigurator = ({ configId, imgUrl, imgDimensions }: DesignConfigura
 			</div>
 			<div className='h-[37.5] flex-col bg-white'>
 				<ScrollArea dir='rtl'>
-					<div className='absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none' aria-hidden='true'/>
+					<div className='absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none'
+					     aria-hidden='true'/>
 					<div className="px-8 pb-12 pt-8">
 						<h2 className='tracking-tight font-bold text-3xl'>محافظ خود را شخصی سازی کنید</h2>
-						<div className="w-full h-px my-6 bg-gray-200" />
+						<div className="w-full h-px my-6 bg-gray-200"/>
 						<div className="relative mt-4 h-full flex flex-col justify-between">
-							<RadioGroup value></RadioGroup>
+							<RadioGroup value={options.color} onChange={(value) => {
+								setOptions((prev) => ({ ...prev, color: value }))
+							}}>
+								<Label>رنگ: {options.color.label}</Label>
+								<div className='mt-3 flex items-center space-x-3'>
+									{
+										COLORS.map(color => (
+											<Radio
+												value={color}
+												key={color.label}
+												className={cn}
+											></Radio>
+										))
+									}
+								</div>
+							</RadioGroup>
 						</div>
 					</div>
 				</ScrollArea>
